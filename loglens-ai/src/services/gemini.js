@@ -18,7 +18,7 @@ export const analyzeLog = async (logContent) => {
   
   try {
     // Modelo Flash 2.5 (Configurado como 2.0-flash-exp para estabilidade em 2026)
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" }); 
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); 
 
     const prompt = `
       Você é um especialista em análise de erros, com especialidade em entendimento de logs que contêm conteúdo de produtos de viagem destinados à CVCCorp.
