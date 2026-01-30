@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'; // useRef adicionado
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileSearch, Upload, CheckCircle, FileText, Loader2, 
@@ -21,7 +21,6 @@ function App() {
 
   // --- ESTADOS JIRA COMPOSER ---
   const [jiraInput, setJiraInput] = useState("");
-  // Referência para saber onde o cursor está na área de texto
   const textareaRef = useRef(null); 
 
   // --- FUNÇÕES AUXILIARES ---
@@ -30,34 +29,24 @@ function App() {
     alert(`${type.toUpperCase()} copiada para a área de transferência!`);
   };
 
-  // --- FUNÇÃO MÁGICA: COLAR IMAGEM ---
+  // --- FUNÇÃO MÁGICA: COLAR IMAGEM (BASE64) ---
   const handlePaste = (e) => {
     const items = e.clipboardData.items;
     for (const item of items) {
       if (item.type.indexOf("image") === 0) {
-        e.preventDefault(); // Impede de colar o nome do arquivo
+        e.preventDefault();
         const blob = item.getAsFile();
         const reader = new FileReader();
-        
         reader.onload = (event) => {
-          // Pega a imagem convertida em texto Base64
           const base64Image = event.target.result;
-          // Monta o markdown da imagem
           const imageMarkdown = `\n![Print de Evidência](${base64Image})\n`;
-          
-          // Insere exatamente onde o cursor está
           const textarea = textareaRef.current;
           const startPos = textarea.selectionStart;
           const endPos = textarea.selectionEnd;
-          
-          const newText = 
-            jiraInput.substring(0, startPos) + 
-            imageMarkdown + 
-            jiraInput.substring(endPos);
-            
+          const newText = jiraInput.substring(0, startPos) + imageMarkdown + jiraInput.substring(endPos);
           setJiraInput(newText);
         };
-        reader.readAsDataURL(blob); // Inicia a conversão
+        reader.readAsDataURL(blob);
       }
     }
   };
@@ -77,14 +66,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-200 flex flex-col items-center p-6 font-sans">
-      {/* Background Glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/10 blur-[150px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-6xl">
-        
-        {/* Header Profissional */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 border-b border-white/5 pb-6">
           <div className="flex items-center gap-4">
             <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-900/40">
@@ -95,8 +81,6 @@ function App() {
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">APOIO B2B CVCCORP Intelligence</p>
             </div>
           </div>
-
-          {/* Navegação por Abas */}
           <nav className="flex bg-slate-900/50 p-1 rounded-2xl border border-white/5">
             <button onClick={() => setActiveTab('analytics')} className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'analytics' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>
               <Layout size={14} /> AI ANALYTICS
@@ -109,7 +93,7 @@ function App() {
         </header>
 
         <main>
-          {/* ABA 1: ANALYTICS (MANTIDA IGUAL) */}
+          {/* ABA 1: ANALYTICS */}
           {activeTab === 'analytics' && (
              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
              <section className="lg:col-span-4 bg-slate-900/40 backdrop-blur-3xl border border-white/5 p-8 rounded-[32px] shadow-2xl">
@@ -129,7 +113,6 @@ function App() {
                  {loading ? <Loader2 className="animate-spin" /> : <Zap size={16} />} RUN DIAGNOSTICS
                </button>
              </section>
-
              <section className="lg:col-span-8">
                {analysis ? (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[32px] shadow-3xl overflow-hidden min-h-[500px] flex flex-col">
@@ -153,7 +136,7 @@ function App() {
            </div>
           )}
 
-          {/* ABA 2: JIRA COMPOSER (COM SUPORTE A IMAGEM) */}
+          {/* ABA 2: JIRA COMPOSER (CORRIGIDA) */}
           {activeTab === 'jira' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[650px]">
               {/* Lado Esquerdo: Editor */}
@@ -163,7 +146,6 @@ function App() {
                     <PenTool size={14} /> Editor Técnico
                   </h3>
                   <div className="flex gap-2 items-center">
-                    {/* Dica visual para o usuário */}
                     <span className="text-[10px] text-slate-500 font-bold flex items-center gap-1 mr-2 bg-slate-800/50 px-2 py-1 rounded">
                       <ImagePlus size={10} /> CTRL+V para Prints
                     </span>
@@ -172,8 +154,8 @@ function App() {
                   </div>
                 </div>
                 <textarea 
-                  ref={textareaRef} // Conecta a referência
-                  onPaste={handlePaste} // Conecta a função de colar imagem
+                  ref={textareaRef}
+                  onPaste={handlePaste}
                   value={jiraInput}
                   onChange={(e) => setJiraInput(e.target.value)}
                   placeholder="Escreva sua análise técnica aqui... Cole prints diretamente com Ctrl+V."
@@ -181,7 +163,7 @@ function App() {
                 />
               </div>
 
-              {/* Lado Direito: Preview com Suporte a Imagem */}
+              {/* Lado Direito: Preview Corrigido */}
               <div className="flex flex-col bg-white rounded-[32px] overflow-hidden shadow-3xl">
                 <div className="bg-slate-50 px-8 py-5 border-b flex justify-between items-center">
                   <h3 className="text-slate-900 font-black text-xs uppercase tracking-widest">JIRA Preview</h3>
@@ -189,8 +171,19 @@ function App() {
                     <Copy size={14} /> COPIAR PARA O JIRA
                   </button>
                 </div>
-                <div className="p-8 overflow-y-auto flex-grow prose prose-slate max-w-none text-slate-800 prose-img:rounded-xl prose-img:shadow-lg prose-img:border prose-img:border-slate-200">
-                  <ReactMarkdown>{jiraInput}</ReactMarkdown>
+                <div className="p-8 overflow-y-auto flex-grow prose prose-slate max-w-none text-slate-800">
+                  <ReactMarkdown 
+                    // Permite imagens em Base64 (data:...)
+                    urlTransform={(url) => url.startsWith("data:") ? url : url}
+                    // Estiliza a imagem para não quebrar o layout
+                    components={{
+                      img: ({node, ...props}) => (
+                        <img {...props} className="rounded-xl shadow-lg border border-slate-200 max-w-full h-auto" />
+                      )
+                    }}
+                  >
+                    {jiraInput}
+                  </ReactMarkdown>
                 </div>
               </div>
             </motion.div>
@@ -202,7 +195,6 @@ function App() {
         </footer>
       </div>
 
-      {/* Modal Vault (Mantido igual) */}
       <AnimatePresence>
         {showSettings && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6">
