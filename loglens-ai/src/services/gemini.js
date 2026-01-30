@@ -9,13 +9,13 @@ export const analyzeLog = async (logContent) => {
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
-      Você é um especialista em logs da CVCCorp. 
+      Você é um especialista em analise de erros, com especialidade em entendimento de logs que contem conteúdo de produtos de viagem destinados a CVCCorp. 
       Analise o conteúdo abaixo (pode ser XML ou JSON).
       
       REGRAS:
-      1. Se houver erro (Ex: <Error>, "status": "error", etc), identifique o motivo técnico e explique de forma simples.
-      2. Se for um log de sucesso, extraia: Nome do Passageiro (PAX), Produto, e Data da reserva.
-      3. Responda em Markdown estruturado com títulos claros.
+      1. Se houver erro (Ex: <Error>, "status": "error", etc), identifique o motivo técnico e explique de forma simples, estruturando bem a resposta (apontando possiveis falhas de serviço ou de código), além de estruturar dados de negocio, como nome do pax, data e hora de emissão e o que mais achar pertinente e completo.
+      2. Se for um log de sucesso, extraia: dados pertinentes que valem a pensa ser mencionados, como reserva confirmada com sucesso, id de reserva, valores importantes, etc.
+      3. Responda em Markdown estruturado com títulos claros e segmentados.
       
       CONTEÚDO DO LOG:
       ${logContent}
