@@ -9,5 +9,5 @@ export default defineConfig({
     tailwindcss(),
   ],
   // TECH LEAD NOTE: Altere 'loglens-ai' para o nome do seu repositório no GitHub
-  base: '/loglens-ai/', 
+  base: '/log-lens-ia/', 
 })
